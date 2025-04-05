@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/login', [\App\Http\Controllers\AuthController::class, 'index'])->name('login');
 Route::group(['prefix' => '/admin'], function () {
     Route::get('/', [\App\Http\Controllers\Admin\AdminController::class, 'index'])->name('admin.index');
+    Route::get('/new-bot', [\App\Http\Controllers\Admin\AdminController::class, 'createBot'])->name('admin.createBot');
+    Route::get('/clear', [\App\Http\Controllers\Admin\AdminController::class, 'clear'])->name('admin.clear');
     Route::group(['prefix' => '/equipments-service'], function () {
         Route::get('/', [\App\Http\Controllers\Admin\EquipmentsServiceController::class, 'index'])->name('admin.equipments-service.index');
         Route::post('/', [\App\Http\Controllers\Admin\EquipmentsServiceController::class, 'store'])->name('admin.equipments-service.store');
