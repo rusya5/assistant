@@ -1,5 +1,5 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<title>Admin | Almaty Resort</title>
+<title>Admin | StreamLab</title>
 <link rel="icon" href="{{asset('assets/images/icon.svg')}}">
 <!--begin::Primary Meta Tags-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>

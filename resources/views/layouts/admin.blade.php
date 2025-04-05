@@ -39,7 +39,7 @@
                     alt="Logo"
                     class="brand-image opacity-75 shadow"
                 />
-                <h3>Assistant</h3>
+                <h3>StreamLab</h3>
                 <!--end::Brand Image-->
             </a>
             <!--end::Brand Link-->

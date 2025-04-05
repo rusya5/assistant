@@ -15,7 +15,7 @@
                 href="#"
                 class="link-dark text-center link-offset-2 link-opacity-100 link-opacity-50-hover"
             >
-                <h1 class="mb-0"><b>Almaty</b>Resort</h1>
+                <h1 class="mb-0"><b>StreamLab</b></h1>
             </a>
         </div>
         <div class="card-body login-card-body">

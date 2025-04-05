@@ -4,7 +4,10 @@ namespace App\Telegram;
 
 use App\Http\Controllers\Admin\PromptController;
 use App\Models\ChatMessage;
+use App\Models\EquipmentsService;
+use App\Models\EventType;
 use DefStudio\Telegraph\Handlers\WebhookHandler;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Stringable;
 use OpenAI\Laravel\Facades\OpenAI;
@@ -19,24 +22,30 @@ class Handler extends WebhookHandler
 
         $this->reply($reply);
     }
-    private function getOpenAiResponse(int $userId, string $userMessage): string
+    public static function getOpenAiResponse(int $chatId, string $userMessage): string
     {
-        ChatMessage::store($userId, 'user', $userMessage);
+        ChatMessage::store($chatId, 'user', $userMessage);
 
         $prompt = Storage::get(PromptController::PROMPT_TXT);
-        $history = ChatMessage::getHistory($userId);
+        $messages = ChatMessage::getHistory($chatId);
+        $equipmentServices = EquipmentsService::getFormattedData();
+        $eventTypes = EventType::get()->toArray();
+        $content = $prompt
+            . "\n eventTypes:". json_encode($eventTypes, JSON_UNESCAPED_UNICODE)
+            . "\n equipmentServices:" . json_encode($equipmentServices, JSON_UNESCAPED_UNICODE)
+            . "\n messages:". json_encode($messages, JSON_UNESCAPED_UNICODE);
 
         $response = OpenAI::chat()->create([
             'model' => 'gpt-4o-mini',
             'messages' => [
-                ['role' => 'user', 'content' => $prompt . json_encode($history, JSON_UNESCAPED_UNICODE) ?? '']
+                ['role' => 'user', 'content' => $content]
             ],
         ]);
 
-        $assistantMessage = $response['choices'][0]['message']['content'];
+        $assistantMessage = json_decode(preg_replace('/^```json\s*|\s*```$/', '', $response['choices'][0]['message']['content']), true);
+        Log::info($assistantMessage);
+        ChatMessage::store($chatId, 'assistant', $assistantMessage['message']);
 
-        ChatMessage::store($userId, 'assistant', $assistantMessage); // Сохраняем ответ
-
-        return $assistantMessage;
+        return $assistantMessage['message'];
     }
 }

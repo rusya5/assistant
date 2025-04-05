@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
 
-    <title>Almaty Resort Review</title>
+    <title>StreamLab Assistant</title>
     <link rel="icon" href="{{asset('assets/images/icon.svg')}}">
 
     <!-- Fonts -->

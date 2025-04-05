@@ -13,4 +13,16 @@ class EquipmentsService extends Model
     {
         return $this->belongsTo(EquipmentsServicesType::class, 'type_id', 'id');
     }
+    public static function getFormattedData(): array
+    {
+        return self::with('type')->get()->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'type' => $item->type->name ?? null,
+                'title' => $item->title,
+                'description' => $item->description,
+                'price' => $item->price,
+            ];
+        })->toArray();
+    }
 }
