@@ -18,7 +18,7 @@ class ChatController extends Controller
             DB::raw('MAX(chat_messages.created_at) AS last_message_at')
         )
             ->leftJoin('chat_messages', 'telegraph_chats.id', '=', 'chat_messages.chat_id')
-            ->groupBy('telegraph_chats.id')
+            ->groupBy('telegraph_chats.id', 'telegraph_chats.name')
             ->orderByDesc('last_message_at')
             ->paginate(15);
         return view('admin.chat.index', compact('chats'));

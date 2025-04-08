@@ -42,7 +42,12 @@ class Handler extends WebhookHandler
             ],
         ]);
 
-        $assistantMessage = json_decode(preg_replace('/^```json\s*|\s*```$/', '', $response['choices'][0]['message']['content']), true);
+        $assistantMessage = json_decode(
+            preg_replace(
+                '/^```json\s*|\s*```$/', '',
+                $response['choices'][0]['message']['content']),
+            true
+        );
         Log::info($assistantMessage);
         ChatMessage::store($chatId, 'assistant', $assistantMessage['message']);
 
