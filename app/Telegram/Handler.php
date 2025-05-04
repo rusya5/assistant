@@ -3,8 +3,10 @@
 namespace App\Telegram;
 
 use App\Http\Controllers\Admin\PromptController;
+use App\Models\BookedEquipmentsService;
 use App\Models\ChatMessage;
 use App\Models\EquipmentsService;
+use App\Models\EquipmentsServiceBooking;
 use App\Models\EventType;
 use DefStudio\Telegraph\Handlers\WebhookHandler;
 use Illuminate\Support\Facades\Log;
@@ -50,7 +52,23 @@ class Handler extends WebhookHandler
         );
         Log::info($assistantMessage);
         ChatMessage::store($chatId, 'assistant', $assistantMessage['message']);
-
+        if($assistantMessage['is_booking']){
+            $booking = EquipmentsServiceBooking::create([
+                'chat_id' => $chatId,
+                'event_type_id' => $assistantMessage['event_type'],
+                'booking_date' => $assistantMessage['booking_date'],
+                'location' => $assistantMessage['location'],
+                'price' => EquipmentsService::whereIn('id', $assistantMessage['equipments_services'])->get()->sum('price'),
+            ]);
+            $bookedEquipmentServices = [];
+            foreach ($assistantMessage['equipments_services'] as $equipmentServiceId){
+                $bookedEquipmentServices[] = [
+                    'equipments_service_id' => $equipmentServiceId,
+                    'booking_id' => $booking->id,
+                ];
+            }
+            BookedEquipmentsService::insert($bookedEquipmentServices);
+        }
         return $assistantMessage['message'];
     }
 }
